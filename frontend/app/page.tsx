@@ -7,7 +7,7 @@ export default function Home() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [dots, setDots] = useState('');
-  const canvasRef = useRef(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // Animated dots for loading
   useEffect(() => {
