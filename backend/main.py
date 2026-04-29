@@ -29,3 +29,11 @@ async def root():
 @app.get("/health")
 async def health():
     return {"status": "healthy"}
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
