@@ -1,7 +1,8 @@
 import os
 from fastapi import APIRouter
 from fastapi.responses import RedirectResponse
-from auth.gmail_oauth import TOKENS, get_authorization_url
+from db.state import TOKENS, FLOWS 
+from auth.gmail_oauth import get_authorization_url
 from google_auth_oauthlib.flow import Flow
 from dotenv import load_dotenv
 
