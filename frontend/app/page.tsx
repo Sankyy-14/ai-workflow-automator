@@ -9,7 +9,7 @@ export default function Home() {
   const [dots, setDots] = useState('');
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  // Animated dots for loading
+  // Animated dots for loading text
   useEffect(() => {
     if (!loading) return;
     const interval = setInterval(() => {

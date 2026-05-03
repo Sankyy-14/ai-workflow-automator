@@ -3,43 +3,27 @@ import base64
 import json
 from dotenv import load_dotenv
 from groq import Groq
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
 
 load_dotenv()
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
-# Google Auth imports
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
 
-SCOPES = [
-    "https://www.googleapis.com/auth/gmail.readonly",
-    "https://www.googleapis.com/auth/gmail.compose",
-]
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-CREDENTIALS_PATH = os.path.join(BASE_DIR, "../credentials.json")
-TOKEN_PATH = os.path.join(BASE_DIR, "../token.json")
-
-
-def get_gmail_service():
-    creds = None
-    if os.path.exists(TOKEN_PATH):
-        creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
-
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_PATH, SCOPES)
-            creds = flow.run_local_server(port=0)
-        with open(TOKEN_PATH, "w") as token:
-            token.write(creds.to_json())
-
-    return build("gmail", "v1", credentials=creds)
-
+def get_gmail_service(user_token_dict):
+    # Construct the credentials object directly from the saved web tokens
+    creds = Credentials(
+        token=user_token_dict.get('token'),
+        refresh_token=user_token_dict.get('refresh_token'),
+        token_uri=user_token_dict.get('token_uri'),
+        client_id=user_token_dict.get('client_id'),
+        client_secret=user_token_dict.get('client_secret'),
+        scopes=user_token_dict.get('scopes')
+    )
+    
+    # Build and return the service using the web flow credentials!
+    return build('gmail', 'v1', credentials=creds)
 
 def decode_body(payload: dict) -> str:
     body = ""
